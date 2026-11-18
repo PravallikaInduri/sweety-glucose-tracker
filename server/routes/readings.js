@@ -1,6 +1,7 @@
 
 const express = require("express");
 const pool = require("../db");
+const redisClient = require("../redis");
 const authenticateToken = require("../middleware/auth");
 
 const router = express.Router();
@@ -11,6 +12,32 @@ const ALLOWED_SLOTS = [
     "After lunch",
     "After dinner"
 ];
+
+// Clear cached reports belonging to one user
+async function invalidateReportCache(userId) {
+    if (!redisClient.isReady) {
+        return;
+    }
+
+    try {
+        const pattern = `report:${userId}:*`;
+        const keys = [];
+
+        for await (const key of redisClient.scanIterator({
+            MATCH: pattern,
+            COUNT: 100
+        })) {
+            keys.push(key);
+        }
+
+        if (keys.length > 0) {
+            await redisClient.del(keys);
+            console.log("User report cache invalidated");
+        }
+    } catch (error) {
+        console.error("Redis cache invalidation error:", error.message);
+    }
+}
 
 function isValidDate(date) {
     if (
@@ -146,6 +173,8 @@ router.post("/", async (req, res) => {
                 Number(glucose_value)
             ]
         );
+
+        await invalidateReportCache(req.user.id);
 
         return res.status(201).json({
             message: "Glucose reading added successfully.",
@@ -365,6 +394,8 @@ router.put("/:id", async (req, res) => {
             ]
         );
 
+        await invalidateReportCache(req.user.id);
+
         return res.status(200).json({
             message: "Reading updated successfully.",
             reading: result.rows[0]
@@ -412,6 +443,8 @@ router.delete("/:id", async (req, res) => {
                 message: "Reading not found."
             });
         }
+
+        await invalidateReportCache(req.user.id);
 
         return res.status(200).json({
             message: "Reading deleted successfully."

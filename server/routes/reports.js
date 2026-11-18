@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const pool = require("../db");
+const redisClient = require("../redis");
 const authenticateToken = require("../middleware/auth");
 
 router.use(authenticateToken);
@@ -62,12 +63,23 @@ router.get("/", async (req, res) => {
             });
         }
 
-        /*
-          Date ranges:
-          Daily: selected date only
-          Month-to-date: first day of selected month through selected date
-          Monthly: entire previous month relative to selected date
-        */
+        // Create a unique cache key for each user and report request
+        const cacheKey = `report:${userId}:${requestedPeriod}:${selectedDate || "today"}`;
+
+        // Check Redis cache
+        if (redisClient.isReady) {
+            try {
+                const cachedReport = await redisClient.get(cacheKey);
+
+                if (cachedReport) {
+                    console.log("Report cache hit");
+
+                    return res.status(200).json(JSON.parse(cachedReport));
+                }
+            } catch (cacheError) {
+                console.error("Redis cache read error:", cacheError.message);
+            }
+        }
 
         const dateRangeQuery = `
             WITH selected AS (
@@ -150,14 +162,31 @@ router.get("/", async (req, res) => {
 
         const summary = summaryResult.rows[0];
 
-        return res.status(200).json({
+        const reportData = {
             period: requestedPeriod,
             count: summary.count || 0,
             highest: summary.highest,
             lowest: summary.lowest,
             average: summary.average,
             readings: readingsResult.rows
-        });
+        };
+
+        // Save report in Redis for 60 seconds
+        if (redisClient.isReady) {
+            try {
+                await redisClient.setEx(
+                    cacheKey,
+                    60,
+                    JSON.stringify(reportData)
+                );
+
+                console.log("Report cached successfully");
+            } catch (cacheError) {
+                console.error("Redis cache write error:", cacheError.message);
+            }
+        }
+
+        return res.status(200).json(reportData);
 
     } catch (error) {
         console.error("Report error:", error.message);

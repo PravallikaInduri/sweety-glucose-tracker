@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
+const redisClient = require("./redis");
 const pool = require("./db");
 
 const authRoutes = require("./routes/auth");
@@ -28,7 +29,10 @@ app.get("/", async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Sweety Glucose Tracker Backend is running!",
-            database: "Connected successfully"
+            database: "Connected successfully",
+            redis: redisClient.isReady
+                ? "Connected successfully"
+                : "Not connected"
         });
     } catch (error) {
         console.error("Database connection error:", error.message);
@@ -65,9 +69,22 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Start server only when running this file directly
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+    redisClient.connect()
+        .then(() => {
+            console.log("Redis connected successfully");
+
+            app.listen(PORT, () => {
+                console.log(`Server running at http://localhost:${PORT}`);
+            });
+        })
+        .catch((error) => {
+            console.error("Redis connection failed:", error.message);
+        });
+}
+
+// Export app for testing
+module.exports = app;
