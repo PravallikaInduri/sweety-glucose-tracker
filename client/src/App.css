@@ -2261,3 +2261,339 @@ tbody tr:hover {
     transition-duration: .01ms !important;
   }
 }
+
+/* ===== DASHBOARD UI REFRESH ===== */
+
+.app-shell {
+  max-width: 1360px;
+  padding: 0 48px 32px;
+  background: #f5f8f5;
+}
+
+.topbar {
+  min-height: 78px;
+  border-bottom-color: #e3ebe4;
+}
+
+.welcome-section {
+  padding: 48px 0 30px;
+}
+
+.welcome-section h1 {
+  font-size: 36px;
+  letter-spacing: -1.3px;
+}
+
+.welcome-subtitle {
+  font-size: 14px;
+  color: #758579;
+}
+
+.date-chip {
+  min-height: 43px;
+  padding: 0 17px;
+  border-radius: 12px;
+  font-size: 12px;
+  box-shadow: 0 3px 12px rgba(30, 65, 40, .04);
+}
+
+.stats-grid {
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  min-height: 145px;
+  padding: 22px;
+  border-radius: 17px;
+  border-color: #e5ece6;
+  box-shadow: 0 5px 18px rgba(35, 65, 42, .045);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(35, 65, 42, .08);
+}
+
+.stat-card-primary {
+  background: linear-gradient(145deg, #edf7ef, #f8fcf8);
+  border-color: #d8e9db;
+}
+
+.stat-topline {
+  font-size: 12px;
+}
+
+.stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.stat-card > strong {
+  margin-top: 17px;
+  font-size: 32px;
+}
+
+.stat-note {
+  font-size: 11px;
+}
+
+.content-grid {
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.panel {
+  padding: 27px;
+  border-radius: 18px;
+  border-color: #e4ebe5;
+  box-shadow: 0 5px 20px rgba(35, 65, 42, .035);
+}
+
+.panel-heading {
+  margin-bottom: 25px;
+}
+
+.panel-heading h2 {
+  font-size: 21px;
+  letter-spacing: -.6px;
+}
+
+.panel-heading .eyebrow {
+  font-size: 10px;
+}
+
+.section-description {
+  font-size: 12px;
+}
+
+.form-stack {
+  gap: 17px;
+}
+
+.form-stack label,
+.panel > label,
+.report-panel > label {
+  gap: 9px;
+  font-size: 12px;
+}
+
+.form-stack input,
+.form-stack select,
+.panel > label input,
+.panel > label select,
+.report-panel input,
+.report-panel select {
+  min-height: 47px;
+  padding: 0 14px;
+  border-radius: 11px;
+  font-size: 13px;
+  border-color: #dce7de;
+}
+
+.form-stack input:focus,
+.form-stack select:focus,
+.panel > label input:focus,
+.panel > label select:focus,
+.report-panel input:focus,
+.report-panel select:focus {
+  border-color: #4c9565;
+  box-shadow: 0 0 0 4px rgba(75, 145, 94, .10);
+}
+
+.primary-button {
+  border-radius: 11px;
+  background: #246b46;
+}
+
+.primary-button:hover {
+  background: #185a39;
+}
+
+.form-submit {
+  min-height: 49px;
+  margin-top: 7px;
+}
+
+.helper-text {
+  font-size: 11px;
+}
+
+.report-summary {
+  padding: 19px;
+  gap: 14px;
+  border-radius: 13px;
+  background: #f5faf5;
+}
+
+.report-summary span {
+  font-size: 11px;
+}
+
+.report-summary strong {
+  font-size: 21px;
+}
+
+.chart-panel,
+.readings-panel {
+  border-radius: 18px;
+}
+
+.chart-container {
+  height: 340px;
+  margin-top: 18px;
+}
+
+.table-wrap {
+  border: 1px solid #e9efea;
+  border-radius: 12px;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead {
+  background: #f4f8f4;
+}
+
+th {
+  padding: 16px;
+  font-size: 11px;
+  color: #637568;
+}
+
+td {
+  padding: 17px 16px;
+  font-size: 12px;
+}
+
+tbody tr:hover {
+  background: #f7fbf7;
+}
+
+.slot-pill {
+  padding: 7px 11px;
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.reading-value {
+  font-size: 14px;
+}
+
+.edit-button,
+.delete-button {
+  min-height: 33px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.refresh-button {
+  min-height: 39px;
+}
+
+.pagination {
+  padding-top: 19px;
+}
+
+.pagination p,
+.pagination-buttons span {
+  font-size: 11px;
+}
+
+.pagination-buttons .secondary-button {
+  min-height: 36px;
+  font-size: 11px;
+}
+
+.app-footer {
+  margin-top: 20px;
+}
+
+/* AUTH PAGE REFRESH */
+
+.auth-page {
+  background:
+    radial-gradient(circle at 15% 15%, #e5f2e8 0, transparent 32%),
+    radial-gradient(circle at 85% 85%, #e8f1e8 0, transparent 30%),
+    #f6f9f6;
+}
+
+.auth-card {
+  padding: 42px;
+  border-radius: 24px;
+  box-shadow: 0 25px 75px rgba(35, 72, 44, .10);
+}
+
+.auth-card h1 {
+  font-size: 31px;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.auth-tabs button {
+  min-height: 43px;
+  font-size: 13px;
+}
+
+/* RESPONSIVE DASHBOARD REFRESH */
+
+@media (max-width: 1050px) {
+  .app-shell {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .panel {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .welcome-section {
+    padding-top: 32px;
+  }
+
+  .welcome-section h1 {
+    font-size: 29px;
+  }
+
+  .stat-card {
+    min-height: 125px;
+    padding: 15px;
+  }
+
+  .stat-card > strong {
+    font-size: 27px;
+  }
+
+  .panel {
+    padding: 19px 15px;
+  }
+
+  .panel-heading h2 {
+    font-size: 18px;
+  }
+
+  .chart-container {
+    height: 280px;
+  }
+
+  .auth-card {
+    padding: 28px 22px;
+  }
+}
