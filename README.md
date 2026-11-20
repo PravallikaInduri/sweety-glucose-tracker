@@ -1,5 +1,7 @@
 # Sweety – Blood Glucose Tracker
 
+A full-stack application for recording and managing blood glucose readings and viewing daily and monthly reports.
+
 ## Installation
 
 Clone the repository:
@@ -25,64 +27,40 @@ npm install
 
 ## Database Setup
 
-Create a PostgreSQL database:
+1. Create a PostgreSQL database named `sweety_glucose_tracker`.
+2. Execute `server/schema.sql` to create the required tables and index.
 
-```sql
-CREATE DATABASE sweety_glucose_tracker;
+From the project root, run:
+
+```bash
+psql -U postgres -h localhost -p 5434 -d sweety_glucose_tracker -f server/schema.sql
 ```
 
-Connect to the `sweety_glucose_tracker` database and execute the following SQL:
+Update the port and database credentials according to your PostgreSQL configuration.
 
-```sql
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS readings (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    reading_date DATE NOT NULL,
-    slot VARCHAR(30) NOT NULL CHECK (
-        slot IN (
-            'Morning (fasting)',
-            'After breakfast',
-            'After lunch',
-            'After dinner'
-        )
-    ),
-    glucose_value INTEGER NOT NULL CHECK (
-        glucose_value BETWEEN 40 AND 600
-    ),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (user_id, reading_date, slot)
-);
-
-CREATE INDEX IF NOT EXISTS idx_readings_user_date
-ON readings(user_id, reading_date);
-```
+## Environment Configuration
 
 Create a `.env` file inside the `server` directory using `server/.env.example` as a reference.
 
-Configure your PostgreSQL credentials and JWT secret:
+Configure the required database credentials and JWT secret.
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_PORT=5434
-DB_NAME=sweety_glucose_tracker
-DB_USER=postgres
-DB_PASSWORD=your_postgres_password
-JWT_SECRET=your_long_random_secret
+## Run the Application
+
+### Start Redis
+
+Make sure Docker Desktop is running.
+
+```bash
+docker run --name sweety-redis -p 6379:6379 -d redis
 ```
 
-Update the database port and credentials according to your PostgreSQL configuration.
+If the container already exists:
 
-## Run the Backend Server
+```bash
+docker start sweety-redis
+```
+
+### Start the Backend
 
 From the `server` directory:
 
@@ -92,17 +70,18 @@ npm run dev
 
 Backend URL: `http://localhost:5000`
 
-## Run the Frontend Client
+### Start the Frontend
 
-From the `client` directory:
+Open another terminal:
 
 ```bash
+cd client
 npm run dev
 ```
 
-Open the local URL displayed by Vite, usually `http://localhost:5173`.
+Open the frontend URL displayed in the terminal, usually `http://localhost:5173`.
 
-## Seed Demo Data
+### Seed Demo Data
 
 From the `server` directory:
 
@@ -110,12 +89,25 @@ From the `server` directory:
 npm run seed
 ```
 
-Demo login credentials:
+**Demo Credentials**
 
 - Email: `demo@sweety.com`
 - Password: `Demo@123`
 
 ## Run Tests
+
+### Backend Tests
+
+From the `server` directory:
+
+```bash
+npm test
+```
+
+- 4 test suites passed
+- 26 tests passed
+
+### Frontend Tests
 
 From the `client` directory:
 
@@ -123,18 +115,21 @@ From the `client` directory:
 npm run test:run
 ```
 
+- 1 test file passed
+- 6 tests passed
+
+**Total: 32 tests passed.**
+
 ## Notes
 
 ### Assumptions
 
-- Each user can access only their own glucose readings.
-- A maximum of four readings can be recorded per day.
-- Each reading slot can have only one entry per day.
-- The monthly report displays the previous calendar month.
+- Each user can access and manage only their own glucose readings.
+- A maximum of one reading is allowed per slot per day for each user.
+- Glucose values must be whole numbers between 40 and 600.
+- Future-dated readings are not allowed.
 
-### Improvements With More Time
+### Improvements with More Time
 
-- Add Docker support for easier setup and deployment.
-- Increase backend and frontend test coverage.
-- Implement Redis caching for reports.
-- Add background reminders using BullMQ.
+- Implement the optional Doctor role with doctor-patient assignments.
+- Add more integration and end-to-end tests.
